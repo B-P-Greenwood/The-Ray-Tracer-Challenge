@@ -1,8 +1,7 @@
 package main;
 
 public class Colour {
-    private double red,green,blue;
-
+    private final double red,green,blue;
 
     public Colour(double red, double green, double blue){
        this.red = red;
