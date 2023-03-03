@@ -10,36 +10,36 @@ public class Colour {
     }
 
     public double getRed(){
-        return this.red;
+        return red;
     }
 
     public double getBlue(){
-        return this.blue;
+        return blue;
     }
 
     public double getGreen(){
-        return this.green;
+        return green;
     }
 
     public Colour add(Colour b) {
-        return new Colour(this.red + b.getRed(), this.green + b.getGreen(), this.blue + b.getBlue());
+        return new Colour(red + b.getRed(), green + b.getGreen(), blue + b.getBlue());
     }
     
     public Colour subtract(Colour b) {
-        return new Colour(this.red - b.getRed(), this.green - b.getGreen(), this.blue - b.getBlue());
+        return new Colour(red - b.getRed(), green - b.getGreen(), blue - b.getBlue());
     }
 
     public Colour scalar(double scalar) {
-        return new Colour(this.red * scalar, this.green * scalar, this.blue * scalar);
+        return new Colour(red * scalar, green * scalar, blue * scalar);
     }
 
     public boolean equals(Colour c) {
         double Epsilon = 0.00001;
-        return c.getRed() - this.red < Epsilon && c.getBlue() - this.blue < Epsilon && c.getGreen() - this.green < Epsilon;
+        return c.getRed() - red < Epsilon && c.getBlue() - blue < Epsilon && c.getGreen() - green < Epsilon;
     }
 
     public Colour hadamardProduct(Colour b) {
-        return new Colour(this.red * b.getRed(), this.green * b.getGreen(), this.blue * b.getBlue() );
+        return new Colour(red * b.getRed(), green * b.getGreen(), blue * b.getBlue() );
     }
 
 }
