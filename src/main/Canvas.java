@@ -1,5 +1,7 @@
 package main;
 
+import java.io.PrintStream;
+
 public class Canvas{
     private final int width, height;
     private Colour[][] canvas;
@@ -48,42 +50,45 @@ public class Canvas{
     }
 
     public String canvasToPPM(){
-       String result = "P3\n"+Integer.toString(width) + " " + Integer.toString(height) + "\n255"; 
+        StringBuilder result = new StringBuilder("P3\n");
+        String s = String.format("%d %d\n255",width,height);
+        result.append(s);
+        //result.concat(Integer.toString(width) + " " + Integer.toString(height) + "\n255");
 
-       for (int i = 0; i < height; i++) {
-        result += "\n";
-        int widthCount = 0; 
-        for (int j = 0; j < width; j++) {
+        for (int i = 0; i < height; i++) {
+            result.append("\n");
+            int widthCount = 0; 
+            for (int j = 0; j < width; j++) {
 
-            Colour c = canvas[j][i];
-            int r,g,b;
+                Colour c = canvas[j][i];
+                int r,g,b;
 
-            r = normalizeColourValue(c.getRed());
-            g = normalizeColourValue(c.getGreen());
-            b = normalizeColourValue(c.getBlue());
+                r = normalizeColourValue(c.getRed());
+                g = normalizeColourValue(c.getGreen());
+                b = normalizeColourValue(c.getBlue());
 
-            result += r;
-            widthCount += 4;
-            if (widthCount >= 67) {
-                result += "\n";
-                widthCount = 0;
-            }else{
-                result += " ";
+                result.append(r);
+                widthCount += 4;
+                if (widthCount >= 67) {
+                    result.append("\n");
+                    widthCount = 0;
+                }else{
+                    result.append(" ");
+                }
+                result.append(g);
+                widthCount += 4;
+                if (widthCount >= 67) {
+                    result.append("\n");
+                    widthCount = 0;
+                }else{
+                    result.append(" ");
+                }
+                result.append(b);
+                widthCount += 4;
+                if (j < (width -1)) result.append(" ");
             }
-            result += g;
-            widthCount += 4;
-            if (widthCount >= 67) {
-                result +="\n";
-                widthCount = 0;
-            }else{
-                result += " ";
-            }
-            result += b;
-            widthCount += 4;
-            if (j < (width -1)) result += " ";
         }
-    }
-
-        return result+"\n";
+        result.append("\n");
+        return result.toString();
     }
 }
