@@ -1,18 +1,14 @@
 package test;
 
+import main.Canvas;
+import main.Colour;
+
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-// import java.util.stream.Stream;
-
 import org.junit.jupiter.api.*;
 
-import main.Canvas;
-import main.Colour;
-// import org.junit.jupiter.params.ParameterizedTest;
-// import org.junit.jupiter.params.provider.Arguments;
-// import org.junit.jupiter.params.provider.MethodSource;
 public class CanvasTest {
     
     @Test

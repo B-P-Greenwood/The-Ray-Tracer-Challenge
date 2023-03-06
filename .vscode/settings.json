@@ -2,5 +2,5 @@
   "java.project.sourcePaths": ["src", "projects"],
   "java.project.outputPath": "bin",
   "java.project.referencedLibraries": ["lib/**/*.jar"],
-  "cSpell.words": ["bpgre", "Colours", "hadamard"]
+  "cSpell.words": ["bpgre", "cofactor", "Colours", "hadamard", "ofactor"]
 }

@@ -1,7 +1,5 @@
 package main;
 
-import java.io.PrintStream;
-
 public class Canvas{
     private final int width, height;
     private Colour[][] canvas;
@@ -43,7 +41,7 @@ public class Canvas{
         return canvas[x][y];
     }
 
-    private int normalizeColourValue(double value){
+    private static int normalizeColourValue(double value){
         if (value <= 0) return 0;
         else if (value >= 1) return 255;
         else return (int) Math.round(value * 255);
@@ -53,7 +51,6 @@ public class Canvas{
         StringBuilder result = new StringBuilder("P3\n");
         String s = String.format("%d %d\n255",width,height);
         result.append(s);
-        //result.concat(Integer.toString(width) + " " + Integer.toString(height) + "\n255");
 
         for (int i = 0; i < height; i++) {
             result.append("\n");
