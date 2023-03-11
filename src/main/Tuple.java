@@ -2,6 +2,7 @@ package main;
 
 public class Tuple {
     private double x,y,z,w;
+    private final double margin = 0.0000001;
 
     public Tuple(double x, double y, double z, double w){
         this.x = x;
@@ -61,5 +62,14 @@ public class Tuple {
 
     public Tuple crossProduct(Vector b) {
         return new Vector(y * b.getZ() - z * b.getY(), z * b.getX() - x * b.getZ(), x * b.getY() - y * b.getX());
+    }
+
+    public boolean compareTuple(Tuple t){
+
+       if((t.getX()+x) /2 > (x + margin) &&
+        (t.getY()+y) /2 > (y + margin) &&
+        (t.getZ()+z) /2 > (z + margin) &&
+        (t.getW()+w) /2 > (w + margin)) return false;
+       else return true;
     }
 }
