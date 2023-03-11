@@ -39,11 +39,12 @@ public class RayTest {
     }
 
     @Test 
-    public void computingAPointFromADistance(){
+    public void computingAPointFromADistanceTest(){
         Point origin = new Point(2, 3, 4);
         Vector direction = new Vector(1, 0, 0);
 
         Ray ray = new Ray(origin, direction);
+
         Point p1 = new Point(2, 3, 4);
         Point p2 = new Point(3, 3, 4);
         Point p3 = new Point(1, 3, 4);
@@ -54,6 +55,23 @@ public class RayTest {
             () -> assertTrue(p2.compareTuple(ray.position(1))),
             () -> assertTrue(p3.compareTuple(ray.position(-1))),
             () -> assertTrue(p4.compareTuple(ray.position(2.5)))
+        );
+    }
+
+    @Test 
+    public void aRayIntersectsASphereAtTwoPointsTest(){
+        Point origin = new Point(0, 0, 5);
+        Vector direction = new Vector(0, 0, 1);
+
+        Ray ray = new Ray(origin, direction);
+
+        Sphere sphere = new Sphere();
+        Intersect xs = new Intersect(sphere, ray);
+        xs.getIntersections();
+
+        assertAll(
+            () -> assertEquals(xs.getCount(), 2),
+            () -> assertEquals(, null);
         );
     }
     
