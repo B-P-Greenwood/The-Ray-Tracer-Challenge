@@ -1,5 +1,8 @@
 package main;
 
+import java.io.FileWriter;
+import java.io.IOException;
+
 public class Canvas{
     private final int width, height;
     private Colour[][] canvas;
@@ -87,5 +90,19 @@ public class Canvas{
         }
         result.append("\n");
         return result.toString();
+    }
+
+    public void writeOutputFile(String output, String filePath) {
+        try {
+            FileWriter fw = new FileWriter(filePath);
+            for (int i = 0; i < output.length(); i++){
+                fw.write(output.charAt(i));
+            }
+            System.out.println("Successfully written");
+            fw.close();
+        }
+        catch (IOException e) {
+            e.getStackTrace();
+        }
     }
 }

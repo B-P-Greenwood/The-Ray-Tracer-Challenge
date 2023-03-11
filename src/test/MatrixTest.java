@@ -8,7 +8,15 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import org.junit.jupiter.api.*;
 
 import main.Matrix;
+import main.Point;
 import main.Tuple;
+import main.Vector;
+
+import java.util.stream.Stream;
+
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 
 public class MatrixTest {
     
@@ -273,4 +281,251 @@ public class MatrixTest {
             () -> assertTrue(result.compareMatrix(a.getMatrix()))
              );
     }
+
+    @Test 
+    public void multiplyingByATranslationMatrixTest(){
+
+        Matrix tran = new Matrix().translation(5, -3, 2);
+        Point p = new Point(-3, 4, 5);
+        Tuple result = tran.multiplyTuple(p);
+
+        assertAll(
+            () -> assertEquals(2, result.getX()),
+            () -> assertEquals(1, result.getY()),
+            () -> assertEquals(7, result.getZ())
+        );
+    }
+    
+    @Test 
+    public void multiplyingByTheInverseOfATranslationMatrixTest(){
+
+        Matrix tran = new Matrix().translation(5, -3, 2);
+        Point p = new Point(-3, 4, 5);
+        Matrix inv = tran.createInverseMatrix();
+        Tuple result = inv.multiplyTuple(p);
+
+        assertAll(
+            () -> assertEquals(-8, result.getX()),
+            () -> assertEquals(7, result.getY()),
+            () -> assertEquals(3, result.getZ())
+        );
+    }
+
+    @Test 
+    public void translationDoesNotAffectVectorsTest(){
+
+        Matrix tran = new Matrix().translation(5, -3, 2);
+        Vector v = new Vector(-3, 4, 5);
+        Tuple result = tran.multiplyTuple(v);
+
+        assertAll(
+            () -> assertEquals(v.getX(), result.getX()),
+            () -> assertEquals(v.getY(), result.getY()),
+            () -> assertEquals(v.getZ(), result.getZ())
+        );
+    }
+
+    @Test 
+    public void aScalingMatrixAppliedToAPointTest(){
+
+        Matrix tran = new Matrix().scaling(2, 3, 4);
+        Point p = new Point(-4, 6, 8);
+        Tuple result = tran.multiplyTuple(p);
+
+        assertAll(
+            () -> assertEquals(-8, result.getX()),
+            () -> assertEquals(18, result.getY()),
+            () -> assertEquals(32, result.getZ())
+        );
+    }
+
+    @Test 
+    public void aScalingMatrixAppliedToAVectorTest(){
+
+        Matrix tran = new Matrix().scaling(2, 3, 4);
+        Vector v = new Vector(-4, 6, 8);
+        Tuple result = tran.multiplyTuple(v);
+
+        assertAll(
+            () -> assertEquals(-8, result.getX()),
+            () -> assertEquals(18, result.getY()),
+            () -> assertEquals(32, result.getZ())
+        );
+    }
+
+    @Test 
+    public void multiplyingByTheInverseOfAScalingMatrixTest(){
+
+        Matrix tran = new Matrix().scaling(2, 3, 4);
+        Vector v = new Vector(-4, 6, 8);
+        Tuple result = tran.createInverseMatrix().multiplyTuple(v);
+
+        assertAll(
+            () -> assertEquals(-2, result.getX()),
+            () -> assertEquals(2, result.getY()),
+            () -> assertEquals(2, result.getZ())
+        );
+    }
+
+    @Test 
+    public void reflectionIsScalingByANegativeValueTest(){
+
+        Matrix tran = new Matrix().scaling(-1, 1, 1);
+        Point p = new Point(2, 3, 4);
+        Tuple result = tran.multiplyTuple(p);
+
+        assertAll(
+            () -> assertEquals(-2, result.getX()),
+            () -> assertEquals(3, result.getY()),
+            () -> assertEquals(4, result.getZ())
+        );
+    }
+
+    @Test 
+    public void rotatingAPointAroundTheXAxisTest(){
+
+        Point p = new Point(0, 1, 0);
+        Matrix half = new Matrix().rotationX(Math.PI/4);
+        Matrix full = new Matrix().rotationX(Math.PI/2);
+        Tuple hResult = half.multiplyTuple(p);
+        Tuple fResult = full.multiplyTuple(p);
+
+        assertAll(
+            () -> assertEquals(0, hResult.getX()),
+            () -> assertEquals(Math.sqrt(2)/2, hResult.getY(), 0.001),
+            () -> assertEquals(Math.sqrt(2)/2, hResult.getZ(), 0.001),
+            () -> assertEquals(0, fResult.getX(), 0.001),
+            () -> assertEquals(0, fResult.getY(), 0.001),
+            () -> assertEquals(1, fResult.getZ(), 0.001)
+        );
+    }
+
+    @Test 
+    public void theInverseOfAnXRotationRotatesInTheOppositeDirectionTest(){
+
+        Point p = new Point(0, 1, 0);
+        Matrix half = new Matrix().rotationX(Math.PI/4);
+        Matrix inv = half.createInverseMatrix();
+        Tuple result = inv.multiplyTuple(p);
+
+        assertAll(
+            () -> assertEquals(0, result.getX()),
+            () -> assertEquals(Math.sqrt(2)/2, result.getY(), 0.0001),
+            () -> assertEquals(-Math.sqrt(2)/2, result.getZ(), 0.0001)
+        );
+    }
+
+    @Test 
+    public void rotatingAPointAroundTheYAxisTest(){
+
+        Point p = new Point(0, 0, 1);
+        Matrix half = new Matrix().rotationY(Math.PI/4);
+        Matrix full = new Matrix().rotationY(Math.PI/2);
+        Tuple hResult = half.multiplyTuple(p);
+        Tuple fResult = full.multiplyTuple(p);
+
+        assertAll(
+            () -> assertEquals(Math.sqrt(2)/2, hResult.getX(), 0.001),
+            () -> assertEquals(0, hResult.getY()),
+            () -> assertEquals(Math.sqrt(2)/2, hResult.getZ(), 0.001),
+            () -> assertEquals(1, fResult.getX(), 0.001),
+            () -> assertEquals(0, fResult.getY(), 0.001),
+            () -> assertEquals(0, fResult.getZ(), 0.001)
+        );
+    }
+
+    @Test 
+    public void rotatingAPointAroundTheZAxisTest(){
+
+        Point p = new Point(0, 1, 0);
+        Matrix half = new Matrix().rotationZ(Math.PI/4);
+        Matrix full = new Matrix().rotationZ(Math.PI/2);
+        Tuple hResult = half.multiplyTuple(p);
+        Tuple fResult = full.multiplyTuple(p);
+
+        assertAll(
+            () -> assertEquals(-Math.sqrt(2)/2, hResult.getX(), 0.001),
+            () -> assertEquals(Math.sqrt(2)/2, hResult.getY(), 0.001),
+            () -> assertEquals(0, hResult.getZ()),
+            () -> assertEquals(-1, fResult.getX(), 0.001),
+            () -> assertEquals(0, fResult.getY(), 0.001),
+            () -> assertEquals(0, fResult.getZ(), 0.001)
+        );
+    }
+
+    @Test 
+    public void shearingTransformationMovesXinProportionToYTest(){
+
+        Matrix tran = new Matrix().shearing(1, 0, 0, 0, 0, 0);
+        Point p = new Point(2, 3, 4);
+        Tuple result = tran.multiplyTuple(p);
+
+        assertAll(
+            () -> assertEquals(5, result.getX()),
+            () -> assertEquals(3, result.getY()),
+            () -> assertEquals(4, result.getZ())
+        );
+    }
+
+    private static Stream<Arguments> shearingScenarios() {
+        return Stream.of(
+          Arguments.of(0,1,0,0,0,0, new Point(6,3,4)),
+          Arguments.of(0,0,1,0,0,0, new Point(2,5,4)),
+          Arguments.of(0,0,0,1,0,0, new Point(2,7,4)),
+          Arguments.of(0,0,0,0,1,0, new Point(2,3,6)),
+          Arguments.of(0,0,0,0,0,1, new Point(2,3,7))
+        );
+    }
+
+    @ParameterizedTest
+    @MethodSource("shearingScenarios")
+    public void shearingMovingTest(double xy, double xz, double yx, double yz, double zx, double zy, Point point){
+
+        Matrix tran = new Matrix().shearing(xy, xz, yx, yz, zx, zy);
+        Point p = new Point(2, 3, 4);
+        Tuple result = tran.multiplyTuple(p);
+
+        assertAll(
+            () -> assertEquals(point.getX(), result.getX()),
+            () -> assertEquals(point.getY(), result.getY()),
+            () -> assertEquals(point.getZ(), result.getZ())
+        );
+    }
+
+    @Test 
+    public void transformationAreAppliedInSequenceTest(){
+
+        Matrix A = new Matrix().rotationX(Math.PI/2);
+        Matrix B = new Matrix().scaling(5,5,5);
+        Matrix C = new Matrix().translation(10,5,7);
+        Point p = new Point(1, 0, 1);
+
+        Tuple p2 = A.multiplyTuple(p);
+        Tuple p3 = B.multiplyTuple(p2);
+        Tuple p4 = C.multiplyTuple(p3);
+
+        assertAll(
+            () -> assertEquals(15, p4.getX()),
+            () -> assertEquals(0, p4.getY()),
+            () -> assertEquals(7, p4.getZ())
+        );
+    }
+
+    @Test 
+    public void chainedTransformationMustBeAppliedInReverseOrderTest(){
+
+        Matrix A = new Matrix().rotationX(Math.PI/2);
+        Matrix B = new Matrix().scaling(5,5,5);
+        Matrix C = new Matrix().translation(10,5,7);
+        Point p = new Point(1, 0, 1);
+
+        Tuple p4 = C.multiplyMatrix(B.getMatrix()).multiplyMatrix(A.getMatrix()).multiplyTuple(p);
+
+        assertAll(
+            () -> assertEquals(15, p4.getX()),
+            () -> assertEquals(0, p4.getY()),
+            () -> assertEquals(7, p4.getZ())
+        );
+    }
+
 }

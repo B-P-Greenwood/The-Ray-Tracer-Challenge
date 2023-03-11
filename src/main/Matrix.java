@@ -168,4 +168,58 @@ public class Matrix {
         }
         return result;
     }
+
+    public Matrix translation(double x, double y, double z){
+        Matrix result = new Matrix();
+        result.setItem(0, 3, x);
+        result.setItem(1, 3, y);
+        result.setItem(2, 3, z);
+        return result;
+    }
+
+    public Matrix scaling(double x, double y, double z){
+        Matrix result = new Matrix();
+        result.setItem(0, 0, x);
+        result.setItem(1, 1, y);
+        result.setItem(2, 2, z);
+        return result;
+    }
+
+    public Matrix rotationX(double radians){
+        Matrix result = new Matrix();
+        result.setItem(1, 1, Math.cos(radians));
+        result.setItem(1, 2, -Math.sin(radians));
+        result.setItem(2, 1, Math.sin(radians));
+        result.setItem(2, 2, Math.cos(radians));
+        return result;
+    }
+
+    public Matrix rotationY(double radians){
+        Matrix result = new Matrix();
+        result.setItem(0, 0, Math.cos(radians));
+        result.setItem(0, 2, Math.sin(radians));
+        result.setItem(2, 0, -Math.sin(radians));
+        result.setItem(2, 2, Math.cos(radians));
+        return result;
+    }
+
+    public Matrix rotationZ(double radians){
+        Matrix result = new Matrix();
+        result.setItem(0, 0, Math.cos(radians));
+        result.setItem(0, 1, -Math.sin(radians));
+        result.setItem(1, 0, Math.sin(radians));
+        result.setItem(1, 1, Math.cos(radians));
+        return result;
+    }
+
+    public Matrix shearing(double xy, double xz, double yx, double yz, double zx, double zy){
+        Matrix result = new Matrix();
+        result.setItem(0, 1, xy);
+        result.setItem(0, 2, xz);
+        result.setItem(1, 0, yx);
+        result.setItem(1, 2, yz);
+        result.setItem(2, 0, zx);
+        result.setItem(2, 1, zy);
+        return result;
+    }
 }
