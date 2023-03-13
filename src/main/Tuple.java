@@ -56,7 +56,7 @@ public class Tuple {
         return new Tuple(x / magnitude, y / magnitude, z / magnitude, w / magnitude);
     }
 
-    public double dotProduct(Vector b) {
+    public double dotProduct(Tuple b) {
         return x*b.getX() + y * b.getY() + z * b.getZ() + w + b.getW();
     }
 

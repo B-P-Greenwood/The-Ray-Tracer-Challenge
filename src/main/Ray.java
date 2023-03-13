@@ -1,19 +1,19 @@
 package main;
 
 public class Ray {
-    private final Point origin; 
-    private final Vector direction;
+    private final Tuple origin; 
+    private final Tuple direction;
 
-    public Ray(Point origin, Vector direction){
+    public Ray(Tuple origin, Tuple direction){
         this.origin = origin;
         this.direction = direction; 
     }
 
-    public Point getOrigin(){
+    public Tuple getOrigin(){
         return origin;
     }
 
-    public Vector getDirection(){
+    public Tuple getDirection(){
         return direction;
     }
 
@@ -23,4 +23,11 @@ public class Ray {
        double pZ = origin.getZ() + direction.getZ()*t;
        return new Point(pX, pY, pZ);
     }
+
+    public Ray transform(Matrix m){
+        Tuple newD = m.multiplyTuple(direction);
+        Tuple newO = m.multiplyTuple(origin);
+        return new Ray(newO, newD);
+    }
+
 }

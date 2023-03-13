@@ -7,9 +7,11 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import org.junit.jupiter.api.*;
 
+import main.Intersect;
 import main.Matrix;
 import main.Point;
 import main.Ray;
+import main.Sphere;
 import main.Tuple;
 import main.Vector;
 
@@ -60,6 +62,76 @@ public class RayTest {
 
     @Test 
     public void aRayIntersectsASphereAtTwoPointsTest(){
+        Point origin = new Point(0, 0, -5);
+        Vector direction = new Vector(0, 0, 1);
+
+        Ray ray = new Ray(origin, direction);
+
+        Sphere sphere = new Sphere();
+        Intersect xs = new Intersect(sphere, ray);
+        double[] intersections = xs.getIntersectionWithSphere();
+
+        assertAll(
+            () -> assertEquals(intersections.length, 2),
+            () -> assertEquals(4, intersections[0]),
+            () -> assertEquals(6, intersections[1])
+        );
+    }
+
+    @Test 
+    public void aRayIntersectsASphereAtATangentTest(){
+        Point origin = new Point(0, 1, -5);
+        Vector direction = new Vector(0, 0, 1);
+
+        Ray ray = new Ray(origin, direction);
+
+        Sphere sphere = new Sphere();
+        Intersect xs = new Intersect(sphere, ray);
+        double[] intersections = xs.getIntersectionWithSphere();
+
+        assertAll(
+            () -> assertEquals(intersections.length, 2),
+            () -> assertEquals(5, intersections[0]),
+            () -> assertEquals(5, intersections[1])
+        );
+    }
+
+    @Test 
+    public void aRayMissesASphereTest(){
+        Point origin = new Point(0, 2, -5);
+        Vector direction = new Vector(0, 0, 1);
+
+        Ray ray = new Ray(origin, direction);
+
+        Sphere sphere = new Sphere();
+        Intersect xs = new Intersect(sphere, ray);
+        double[] intersections = xs.getIntersectionWithSphere();
+
+        assertAll(
+            () -> assertEquals(intersections.length, 0)
+        );
+    }
+
+    @Test 
+    public void aRayOriginatesInsideASphereTest(){
+        Point origin = new Point(0, 0, 0);
+        Vector direction = new Vector(0, 0, 1);
+
+        Ray ray = new Ray(origin, direction);
+
+        Sphere sphere = new Sphere();
+        Intersect xs = new Intersect(sphere, ray);
+        double[] intersections = xs.getIntersectionWithSphere();
+
+        assertAll(
+            () -> assertEquals(intersections.length, 2),
+            () -> assertEquals(-1, intersections[0]),
+            () -> assertEquals(1, intersections[1])
+        );
+    }
+
+    @Test 
+    public void aSphereIsBehindARayTest(){
         Point origin = new Point(0, 0, 5);
         Vector direction = new Vector(0, 0, 1);
 
@@ -67,11 +139,12 @@ public class RayTest {
 
         Sphere sphere = new Sphere();
         Intersect xs = new Intersect(sphere, ray);
-        xs.getIntersections();
+        double[] intersections = xs.getIntersectionWithSphere();
 
         assertAll(
-            () -> assertEquals(xs.getCount(), 2),
-            () -> assertEquals(, null);
+            () -> assertEquals(intersections.length, 2),
+            () -> assertEquals(-6, intersections[0]),
+            () -> assertEquals(-4   , intersections[1])
         );
     }
     
