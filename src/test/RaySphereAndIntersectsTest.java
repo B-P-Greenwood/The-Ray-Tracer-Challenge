@@ -2,7 +2,6 @@ package test;
 
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import org.junit.jupiter.api.*;
@@ -12,17 +11,10 @@ import main.Intersections;
 import main.Matrix;
 import main.Point;
 import main.Ray;
-import main.Tuple;
 import main.Vector;
 import main.shapes.Sphere;
 
-import java.util.stream.Stream;
-
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.Arguments;
-import org.junit.jupiter.params.provider.MethodSource;
-
-public class RayTest {
+public class RaySphereAndIntersectsTest {
 
     @Test
     public void creatingAndQueryingARayTest(){
@@ -260,4 +252,97 @@ public class RayTest {
         );
     }
 
+    @Test 
+    public void translatingARayTest(){
+        Point origin = new Point(1, 2, 3);
+        Vector direction = new Vector(0, 1, 0);
+
+        Ray ray = new Ray(origin, direction);
+        Matrix translation = new Matrix().translation(3, 4, 5);
+        Ray ray2 = ray.transform(translation);
+
+        Point p = new Point(4, 6, 8);
+        Vector v = new Vector(0, 1, 0);
+
+        assertAll(
+            () -> assertTrue(ray2.getOrigin().compareTuple(p)),
+            () -> assertTrue(ray2.getDirection().compareTuple(v))
+        );
+    }
+
+    @Test 
+    public void scalingARayTest(){
+        Point origin = new Point(1, 2, 3);
+        Vector direction = new Vector(0, 1, 0);
+
+        Ray ray = new Ray(origin, direction);
+        Matrix s = new Matrix().scaling(2, 3, 4);
+        Ray ray2 = ray.transform(s);
+
+        Point p = new Point(2, 6, 12);
+        Vector v = new Vector(0, 3, 0);
+
+        assertAll(
+            () -> assertTrue(ray2.getOrigin().compareTuple(p)),
+            () -> assertTrue(ray2.getDirection().compareTuple(v))
+        );
+    }
+
+    @Test 
+    public void aSpheresDefaultTransformationTest(){
+        Sphere s = new Sphere();
+        Matrix m = s.getTransformMatrix();
+
+        Matrix identity = new Matrix();
+
+        assertAll(
+            () -> assertTrue(identity.compareMatrix(m.getMatrix()))
+        );
+    }
+
+    @Test 
+    public void changingASpheresTransformationTest(){
+        Sphere s = new Sphere();
+        Matrix trans = new Matrix().translation(2, 3, 4);
+
+        s.setTransformMatrix(trans);
+
+        assertAll(
+            () -> assertTrue(trans.compareMatrix(s.getTransformMatrix().getMatrix()))
+        );
+    }
+
+    @Test 
+    public void intersectingAScaledSphereWithARayTest(){
+        Sphere s = new Sphere();
+        Point origin = new Point(0, 0, -5);
+        Vector direction = new Vector(0, 0, 1);
+
+        Ray ray = new Ray(origin, direction);
+
+        s.setTransformMatrix(new Matrix().scaling(2, 2, 2));
+        Intersections xs = s.getIntersections(ray);
+
+        assertAll(
+            () -> assertEquals(2, xs.getCount()),
+            () -> assertEquals(3, xs.getItem(0).getValue()),
+            () -> assertEquals(7, xs.getItem(1).getValue())
+        );
+    }
+
+    @Test 
+    public void intersectingATranslatedSphereWithARayTest(){
+        Sphere s = new Sphere();
+        Point origin = new Point(0, 0, -5);
+        Vector direction = new Vector(0, 0, 1);
+
+        Ray ray = new Ray(origin, direction);
+
+        s.setTransformMatrix(new Matrix().translation(5, 0, 0));
+        Intersections xs = s.getIntersections(ray);
+
+        assertAll(
+            () -> assertEquals(0, xs.getCount())
+        );
+    }
 }

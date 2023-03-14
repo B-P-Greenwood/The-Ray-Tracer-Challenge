@@ -4,14 +4,17 @@ import java.util.ArrayList;
 
 import main.Intersect;
 import main.Intersections;
+import main.Matrix;
 import main.Point;
 import main.Ray;
 import main.Tuple;
 
 public class Sphere extends Shape{
+
     private final Point centre = new Point(0, 0, 0);
     private final int radii = 1;
     ArrayList<Double> intersections = new ArrayList<>();
+    private Matrix transform = new Matrix();
     
     public Sphere(){}
 
@@ -19,9 +22,8 @@ public class Sphere extends Shape{
     public Point getCentre(){ return centre;}
 
     public Intersections getIntersections(Ray ray){
-        //ray tr transform matrix 
-        // Matrix m = new Matrix().createInverseMatrix();
-        // ray = ray.transform(m);
+
+        ray = ray.transform(transform.createInverseMatrix());
         Tuple oc = ray.getOrigin().subtract(centre);
         double a = ray.getDirection().dotProduct(ray.getDirection());
         double b = 2.0 * ray.getDirection().dotProduct(oc);
@@ -38,4 +40,10 @@ public class Sphere extends Shape{
 
         }else return new Intersections();
     }
+
+    public void setTransformMatrix(Matrix m){
+        transform = m;
+    }
+
+    public Matrix getTransformMatrix(){ return transform; }
 }
