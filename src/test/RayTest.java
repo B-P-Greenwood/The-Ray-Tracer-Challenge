@@ -8,12 +8,13 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import org.junit.jupiter.api.*;
 
 import main.Intersect;
+import main.Intersections;
 import main.Matrix;
 import main.Point;
 import main.Ray;
-import main.Sphere;
 import main.Tuple;
 import main.Vector;
+import main.shapes.Sphere;
 
 import java.util.stream.Stream;
 
@@ -68,13 +69,12 @@ public class RayTest {
         Ray ray = new Ray(origin, direction);
 
         Sphere sphere = new Sphere();
-        Intersect xs = new Intersect(sphere, ray);
-        double[] intersections = xs.getIntersectionWithSphere();
+        Intersections intersections = sphere.getIntersections(ray);
 
         assertAll(
-            () -> assertEquals(intersections.length, 2),
-            () -> assertEquals(4, intersections[0]),
-            () -> assertEquals(6, intersections[1])
+            () -> assertEquals(intersections.getCount(), 2),
+            () -> assertEquals(4, intersections.getItem(0).getValue()),
+            () -> assertEquals(6, intersections.getItem(1).getValue())
         );
     }
 
@@ -86,13 +86,12 @@ public class RayTest {
         Ray ray = new Ray(origin, direction);
 
         Sphere sphere = new Sphere();
-        Intersect xs = new Intersect(sphere, ray);
-        double[] intersections = xs.getIntersectionWithSphere();
+        Intersections intersections = sphere.getIntersections(ray);
 
         assertAll(
-            () -> assertEquals(intersections.length, 2),
-            () -> assertEquals(5, intersections[0]),
-            () -> assertEquals(5, intersections[1])
+            () -> assertEquals(intersections.getCount(), 2),
+            () -> assertEquals(5, intersections.getItem(0).getValue()),
+            () -> assertEquals(5, intersections.getItem(1).getValue())
         );
     }
 
@@ -104,11 +103,10 @@ public class RayTest {
         Ray ray = new Ray(origin, direction);
 
         Sphere sphere = new Sphere();
-        Intersect xs = new Intersect(sphere, ray);
-        double[] intersections = xs.getIntersectionWithSphere();
+        Intersections intersections = sphere.getIntersections(ray);
 
         assertAll(
-            () -> assertEquals(intersections.length, 0)
+            () -> assertEquals(0, intersections.getCount())
         );
     }
 
@@ -120,13 +118,12 @@ public class RayTest {
         Ray ray = new Ray(origin, direction);
 
         Sphere sphere = new Sphere();
-        Intersect xs = new Intersect(sphere, ray);
-        double[] intersections = xs.getIntersectionWithSphere();
+        Intersections intersections = sphere.getIntersections(ray);
 
         assertAll(
-            () -> assertEquals(intersections.length, 2),
-            () -> assertEquals(-1, intersections[0]),
-            () -> assertEquals(1, intersections[1])
+            () -> assertEquals(intersections.getCount(), 2),
+            () -> assertEquals(-1, intersections.getItem(0).getValue()),
+            () -> assertEquals(1, intersections.getItem(1).getValue())
         );
     }
 
@@ -138,14 +135,129 @@ public class RayTest {
         Ray ray = new Ray(origin, direction);
 
         Sphere sphere = new Sphere();
-        Intersect xs = new Intersect(sphere, ray);
-        double[] intersections = xs.getIntersectionWithSphere();
+        Intersections intersections = sphere.getIntersections(ray);
 
         assertAll(
-            () -> assertEquals(intersections.length, 2),
-            () -> assertEquals(-6, intersections[0]),
-            () -> assertEquals(-4   , intersections[1])
+            () -> assertEquals(intersections.getCount(), 2),
+            () -> assertEquals(-6, intersections.getItem(0).getValue()),
+            () -> assertEquals(-4, intersections.getItem(1).getValue())
         );
     }
-    
+
+    @Test 
+    public void anIntersectionEncapsulatesTAndObjectTest(){
+        Sphere sphere = new Sphere();
+
+        Intersect i = new Intersect(3.5, sphere);
+
+        assertAll(
+            () -> assertEquals(i.getValue(), 3.5),
+            () -> assertEquals(i.getShape(), sphere)
+        );
+    }
+
+    @Test 
+    public void aggregatingIntersectionsTest(){
+        Sphere sphere = new Sphere();
+
+        Intersect i1 = new Intersect(1, sphere);
+        Intersect i2 = new Intersect(2, sphere);
+        Intersections xs = new Intersections(i1, i2);
+
+        assertAll(
+            () -> assertEquals(2, xs.getCount()),
+            () -> assertEquals(1, xs.getItem(0).getValue()),
+            () -> assertEquals(2, xs.getItem(1).getValue())
+        );
+    }
+
+    @Test 
+    public void intersectSetsTheObjectOnTheIntersectionTest(){
+        Sphere sphere = new Sphere();
+
+        Point origin = new Point(0, 0, -5);
+        Vector direction = new Vector(0, 0, 1);
+
+        Ray ray = new Ray(origin, direction);
+        Intersections xs = sphere.getIntersections(ray);
+
+        assertAll(
+            () -> assertEquals(2, xs.getCount()),
+            () -> assertEquals(sphere, xs.getItem(0).getShape()),
+            () -> assertEquals(sphere, xs.getItem(1).getShape())
+        );
+    }
+
+    @Test 
+    public void theSortingOfIntersectionsTest(){
+        Sphere sphere = new Sphere();
+        Intersect i1 = new Intersect(5, sphere);
+        Intersect i2 = new Intersect(2, sphere);
+        Intersections xs = new Intersections(i1, i2);
+
+        assertAll(
+            () -> assertEquals(2, xs.getCount()),
+            () -> assertEquals(2, xs.getItem(0).getValue()),
+            () -> assertEquals(5, xs.getItem(1).getValue())
+        );
+    }
+
+    @Test 
+    public void theHitWhenAllInterSectionsHavePositiveTTest(){
+        Sphere sphere = new Sphere();
+        Intersect i1 = new Intersect(1, sphere);
+        Intersect i2 = new Intersect(2, sphere);
+        Intersections xs = new Intersections(i2, i1);
+
+        Intersect hit = xs.hit();
+
+        assertAll(
+            () -> assertEquals(i1, hit)
+        );
+    }
+
+    @Test 
+    public void theHitWhenSomeInterSectionsHaveNegativeTTest(){
+        Sphere sphere = new Sphere();
+        Intersect i1 = new Intersect(-1, sphere);
+        Intersect i2 = new Intersect(1, sphere);
+        Intersections xs = new Intersections(i2, i1);
+
+        Intersect hit = xs.hit();
+
+        assertAll(
+            () -> assertEquals(i2, hit)
+        );
+    }
+
+    @Test 
+    public void theHitWhenAllInterSectionsHaveNegativeTTest(){
+        Sphere sphere = new Sphere();
+        Intersect i1 = new Intersect(-2, sphere);
+        Intersect i2 = new Intersect(-1, sphere);
+        Intersections xs = new Intersections(i2, i1);
+
+        Intersect hit = xs.hit();
+
+        assertAll(
+            () -> assertEquals(null, hit)
+        );
+    }
+
+    @Test 
+    public void theIsAlwaysTheLowestNonNegativeIntersectionTest(){
+        Sphere sphere = new Sphere();
+        Intersect i1 = new Intersect(5, sphere);
+        Intersect i2 = new Intersect(7, sphere);
+        Intersect i3 = new Intersect(-3, sphere);
+        Intersect i4 = new Intersect(2, sphere);
+        Intersections xs = new Intersections(i2, i1, i3, i4);
+
+        Intersect hit = xs.hit();
+
+        assertAll(
+            () -> assertEquals(i4, hit)
+        );
+    }
+
 }
